@@ -103,7 +103,29 @@ int right_bound(int[] nums, int target) {
 }
 ```
 
+### 快排
+```
+int partition(int a[], int start, int end){
+    int p = a[start];
+    while(start < end){
+        while(a[end] >= p && start < end) end--;
+        a[start] = a[end];
+        while(a[start] < p && start < end) start++;
+        a[end] = a[start];
+    }
+    a[start] = p;
+    return start;
+}
 
+void qs(int a[], int start, int end){
+    if(start >= end){
+        return;
+    }
+    int mid = partition(a, start, end);
+    qs(a, start, mid-1);
+    qs(a, mid+1, end);
+}
+```
 
 
 
