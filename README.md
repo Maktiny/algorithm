@@ -230,6 +230,63 @@ if (s[i] == p[j] || p[j] == '.') {
 * 求解每一个子问题的最优解
 * 将局部最优解堆叠成全局最优解
 
+### 摆动序列
+* 使用pre ,curr记录差值,如果满足要求则pre = curr，如果不满足，则pre仍然为原来的值，curr继续向前遍历。
+* [leetcode](https://leetcode-cn.com/problems/wiggle-subsequence/)
+
+### 最大子数组和
+* (贪心算法) 遍历nums，从头开始用count累积，如果count一旦加上nums[i]变为负数，那么就应该从nums[i+1]
+开始从0累积count了，因为已经变为负数的count，只会拖累总和。
+* (动态规划) ：dp[i]表示包括i之前的最大连续子序列和
+* dp[i] = max(dp[i - 1] + nums[i], nums[i]); // 状态转移公式
+![53.最大子序和.gif](http://tva1.sinaimg.cn/large/0070vHShly1gzhv750xs4g30bk08ynpd.gif)
+
 
 ### 跳跃游戏
+
+* 每次取最大跳跃步数（取最大覆盖范围），整体最优解：最后得到整体最大覆盖范围，看是否能到终点。
+* *[leetcode](https://programmercarl.com/0055.%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F.html#%E6%80%9D%E8%B7%AF)
+
+
+### 加油站
+* 首先如果总油量减去总消耗大于等于零那么一定可以跑完一圈
+* 每个加油站的剩余量rest[i]为gas[i] - cost[i]。
+i从0开始累加rest[i]，和记为curSum，一旦curSum小于零，说明[0, i]区间都不能作为起始位置，起始位置从i+1算起，再从0计算curSum
+* [leetcode](https://programmercarl.com/0134.%E5%8A%A0%E6%B2%B9%E7%AB%99.html#%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95-%E6%96%B9%E6%B3%95%E4%B8%80)
+
+
+
+### 分发糖果
+* 本题采用了两次贪心的策略：
+candy[i],初始值为1，
+一次是从左到右遍历，只比较右边孩子评分比左边大的情况candy[i] = candy[i - 1] + 1;。
+一次是从右到左遍历，只比较左边孩子评分比右边大的情况candy[i] = (candy[i - 1] + 1,candy[i])。
+[leetcode](https://programmercarl.com/0135.%E5%88%86%E5%8F%91%E7%B3%96%E6%9E%9C.html#%E6%80%9D%E8%B7%AF)
+
+
+### 柠檬水找零
+* 有如下三种情况：
+
+情况一：账单是5，直接收下。
+情况二：账单是10，消耗一个5，增加一个10
+情况三：账单是20，优先消耗一个10和一个5，如果不够，再消耗三个5
+循环，三种情况分别处理。
+* [leetcode](https://leetcode-cn.com/problems/lemonade-change/)
+
+
+### 根据身高重建队列
+* 遇到两个维度权衡的时候，一定要先确定一个维度，再确定另一个维度。
+* 先按照身高排序，然后在利用vector的特性插入
+* [leetcode](https://programmercarl.com/0406.%E6%A0%B9%E6%8D%AE%E8%BA%AB%E9%AB%98%E9%87%8D%E5%BB%BA%E9%98%9F%E5%88%97.html#%E6%80%9D%E8%B7%AF)
+
+
+### 最少数量的箭引爆气球
+* 让气球尽可能的重叠，需要对数组进行排序。
+* 每次都把最小右边界赋值给下一个元素，只有该元素的左边小于最小右边界
+才能用一支箭射穿。
+* [leetcode](https://programmercarl.com/0452.%E7%94%A8%E6%9C%80%E5%B0%91%E6%95%B0%E9%87%8F%E7%9A%84%E7%AE%AD%E5%BC%95%E7%88%86%E6%B0%94%E7%90%83.html#%E6%80%9D%E8%B7%AF)
+
+
+### 
+
 

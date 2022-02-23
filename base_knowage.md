@@ -1,5 +1,22 @@
 ## 基本的数据结构
 
+### memset(void* a, int initial_value, size_t s)数组初始化工具
+```
+/*注意memset()只能为数组赋初始值为0
+ *原因是memset()函数的实现导致的，
+void *(memset) (void *s,int c,size_t n)
+{
+     const unsigned char uc = c;
+     unsigned char *su;//截断
+     for(su = s;0 < n;++su,--n)
+     return s;
+ }
+
+*/
+int a[n];
+memset(a, 0, sizeof(a));
+```
+
 ### 链表框架
 
 ```
