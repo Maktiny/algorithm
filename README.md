@@ -356,4 +356,9 @@ void backtracking(参数) {
     }
 }
 ```
+### 优先级队列
+* 优先级队列的底层实现是堆，维护一个k个元素的小顶堆
+* ![参考](https://programmercarl.com/0347.%E5%89%8DK%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0.html)
+
+
 

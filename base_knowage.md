@@ -1,5 +1,11 @@
 ## 基本的数据结构
 
+### 杂项
+1. new/delete是C++的操作符，而malloc/free是C中的函数。
+2. new做两件事，一是分配内存，二是调用类的构造函数；同样，delete会调用类的析构函数和释放内存。而malloc和free只是分配和释放内存。
+3. new建立的是一个对象，而malloc分配的是一块内存；new建立的对象可以用成员函数访问，不要直接访问它的地址空间；
+malloc分配的是一块内存区域，用指针访问，可以在里面移动指针；new出来的指针是带有类型信息的，而malloc返回的是void指针。
+4. new/delete是保留字，不需要头文件支持；malloc/free需要头文件库函数支持。
 ### C 常用语法
 ```
 1. 字符串数 char s[2] = "ss"; //c语言没有字符串类型
@@ -8,7 +14,8 @@
 ```
 
 ### c++常用语法
-
+C++中map、set、multimap，multiset的底层实现都是平衡二叉搜索树，所以map、set的增删操作时间时间复杂度是logn，
+注意我这里没有说unordered_map、unordered_set，unordered_map、unordered_map底层实现是哈希表
 ```
 string s = to_string(int a) int 转 string
 
@@ -47,7 +54,7 @@ mapStudent[456] = "student_second";
 iter = mapStudent.find("123");
  
 if(iter != mapStudent.end())
-       cout<<"Find, the value is"<<iter->second<<endl;
+       cout<<"Find, the value is"<<iter->second<<endl;//迭代器才使用->
 else
    cout<<"Do not Find"<<endl;
 
@@ -64,10 +71,95 @@ mapStudent.erase(mapStudent.begin(), mapStudent.end());
 
 //插入的数据量
 int nSize = mapStudent.size();
+//key 的获取mapStudent.first
+//value的获取mapStudent.second
+
 ```
 ### C++ unordered_set
 ![2022-02-28 14-14-45 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzt7b2vnnij30l50ahq7w.jpg)
 ![2022-02-28 14-26-06 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzt7jyx6jaj30k90d3dph.jpg)
+
+
+### C++ 的vector
+
+```
+vector<vector<int>> matrix(m);
+    for(int i=0; i!=matrix.size(); i++)
+        matrix[i].resize(n);
+    
+    // 二维数组打印
+    for(int i=0; i!=matrix.size();i++)
+    {
+        for(int j=0; j!=matrix[0].size();j++){
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+  
+```
+
+### C++ stack
+![2022-03-01 14-25-43 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzud5poju5j30k505xn0q.jpg)
+* top()是取栈顶元素，不会删除里面的元素，返回栈顶的引用；
+* pop()是删除栈顶元素，返回void。
+```
+stack<int> s;
+int a = s.top();
+s.pop();
+
+ stack<int> stack;
+    stack.push(21);
+    stack.push(22);
+    stack.push(24);
+    stack.push(25);
+     
+         stack.pop();
+    stack.pop();
+ 
+    while (!stack.empty()) {
+        cout << ' ' << stack.top();
+        stack.pop();
+    }
+
+
+
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+
+        vector<int> ret(nums.size(), -1);
+       //单调栈寻找右边更大的第一个元素。
+        stack<int> sk; //用栈来存储元素下标
+         //循环数组的处理       
+        for(int i = 0; i < nums.size() * 2; i++){
+            while(!sk.empty() && nums[i % nums.size()] > nums[sk.top()]){
+                ret[sk.top()] =  nums[i % nums.size()];
+                sk.pop();
+            }
+            sk.push(i % nums.size());
+        }
+        return ret;
+
+    }
+};
+```
+
+### C++ queue
+![2022-03-01 14-58-18 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzue31bllwj30u3089dn1.jpg)
+![2-1P913113140553.jpg](http://tva1.sinaimg.cn/large/0070vHShly1gzue4dtbrhj30jg05uq3i.jpg)
+
+### C++ deque 双端队列
+* C++中deque是stack和queue默认的底层实现容器
+* deque是可以两边扩展的，而且deque里元素在内存中并不是严格的连续分布的
+![2022-03-02 10-36-08 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzvc68kdakj30sh0lun99.jpg)
+
+### C++ 的priority_queue优先级队列
+* priority_queue利用max-heap（大顶堆）完成对元素的排序，这个大顶堆是以vector为表现形式的complete binary tree（完全二叉树）
+![2022-03-02 09-21-37 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzv9zhyiw4j30pr0dmagj.jpg)
+
+```
+mypqueue1.swap(mypqueue2);
+```
 
 ### memset(void* a, int initial_value, size_t s)数组初始化工具
 ```
@@ -136,6 +228,68 @@ void traverse(TreeNode root) {
     for (TreeNode child : root.children)
          traverse(child);
 }
+
+
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+//N杈树的遍历
+class Solution {
+    void traverse(Node* root, vector<int>& b){
+        if(root == NULL) return;
+        int size = root->children.size();
+        for(int i = 0; i < size; i++){
+            if(root->children[i]) traverse(root->children[i], b);
+        }
+        b.push_back(root->val);
+    }
+public:
+    vector<int> postorder(Node* root) {
+        vector<int> result;
+        traverse(root, result);
+        return result;
+    }
+};
+
+//N杈树的层序遍历
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        queue<Node *>qu;
+        vector<vector<int>> result;
+        if(root == NULL) return result;
+        qu.push(root);
+        while(!qu.empty()){ //每循环一次就遍历一层
+            int size = qu.size(); //使用size来控制层数
+            vector<int> ret;
+            for(int i = 0; i < size; i++){
+                Node* node = qu.front();
+                ret.push_back(node->val);
+                qu.pop();
+                int csize = node->children.size();//遍历子树。
+                for(int j = 0; j < csize; j++){
+                    qu.push(node->children[j]);
+                }
+            }
+            result.push_back(ret);
+        }
+       return result;
+    }
+};
 ```
 
 ### 数组的遍历
