@@ -12,6 +12,16 @@ malloc分配的是一块内存区域，用指针访问，可以在里面移动�
 2. char *p = s;
 3. strlen(p) //计算字符串s的长度
 ```
+### 介绍几个比较有用的函数：
+
+* isalpha ：判断一个字符是否为字母，如果是则返回true，否则返回false；
+* isdigit : 判断一个字符是否表示数字，如果是则返回true，否则返回false；
+* isalnum : 判断一个字符是否表示数字或者字母，如果是则返回true，否则返回false;
+* islower : 判断一个字符是否为小写字母，如果是则返回true，否则返回false;
+* isupper : 判断一个字符是否为大写字母，如果是则返回true，否则返回false；
+* tolower : 若字符为字母则转化为小写字母；
+* toupper : 若字符为字母则转化为大写字母；
+
 
 ### c++常用语法
 C++中map、set、multimap，multiset的底层实现都是平衡二叉搜索树，所以map、set的增删操作时间时间复杂度是logn，
@@ -25,7 +35,7 @@ static bool cmp(vector<int>& a, vector<int>& b){
             return a[1] < b[1]; //按右边界排序
     }
 sort(intervals.begin(), intervals.end(), cmp);//按起点排序
-
+string a = s.substr(0,5);     //获得字符串s中从第0位开始的长度为5的字符串
 
 vector<vector<int>> a;//二维数组
 a.push_back({1,2});//添加元素到末尾
@@ -83,10 +93,17 @@ int nSize = mapStudent.size();
 ### C++ 的vector
 
 ```
+vector<int>ret(n+1, 0);//之后ret.push_back(),是在n+1的后面追加
+
+像上面这样声明之后，push_back是在n+1之后追加
+
+
 vector<vector<int>> matrix(m);
     for(int i=0; i!=matrix.size(); i++)
         matrix[i].resize(n);
-    
+      //vector的初始化
+     vector<int> myvector{ 1, 2, 3, 4, 5 };
+
     // 二维数组打印
     for(int i=0; i!=matrix.size();i++)
     {
@@ -155,10 +172,50 @@ public:
 
 ### C++ 的priority_queue优先级队列
 * priority_queue利用max-heap（大顶堆）完成对元素的排序，这个大顶堆是以vector为表现形式的complete binary tree（完全二叉树）
+* 默认是大顶堆：priority_queue<int> big_heap
+* 小顶堆：priority_queue<int, vector<int>, greater<int>> small_heap
+
 ![2022-03-02 09-21-37 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzv9zhyiw4j30pr0dmagj.jpg)
 
 ```
 mypqueue1.swap(mypqueue2);
+
+和最小的k个数对
+leetcode:https://leetcode-cn.com/problems/qn8gGX/
+class Solution {
+public:
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+     auto cmp = [&](pair<int,int>& a, pair<int,int>& b){
+         return a.first + a.second < b.first + b.second;//小顶堆
+     };
+
+     priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(cmp)> que(cmp);
+
+     for(int i = 0; i < nums1.size() && i < k; i++){
+         for(int j = 0; j < nums2.size() && j < k; j++){
+             if(que.size() < k){
+                  que.push(pair<int,int>(nums1[i], nums2[j]));
+             }
+             else if(nums1[i] + nums2[j] <= que.top().first + que.top().second){
+                
+                 que.push(pair<int,int>(nums1[i], nums2[j]));
+                  que.pop();
+             }
+             //if(que.size() > k) que.pop();
+         }
+     }
+     vector<vector<int>>ret;
+     vector<int>tem;
+     while(!que.empty()){
+         tem.push_back(que.top().first);
+         tem.push_back(que.top().second);
+         ret.push_back(tem);
+         tem.clear();
+         que.pop();
+     }
+     return ret;
+    }
+};
 ```
 
 ### memset(void* a, int initial_value, size_t s)数组初始化工具
@@ -383,16 +440,157 @@ void qs(int a[], int start, int end){
     }
 ```
 
+### 回溯算法
+回溯法，一般可以解决如下几种问题：
+
+* 组合问题：N个数里面按一定规则找出k个数的集合
+* 切割问题：一个字符串按一定规则有几种切割方式
+* 子集问题：一个N个数的集合里有多少符合条件的子集
+* 排列问题：N个数按一定规则全排列，有几种排列方式
+* 棋盘问题：N皇后，解数独等等
+
+1. 因为回溯法解决的都是在集合中递归查找子集，集合的大小就构成了树的宽度，递归的深度，都构成的树的深度
+![huisu.png](http://tva1.sinaimg.cn/large/0070vHShly1gzr6c4aq8nj311s0ls453.jpg)
+```
+
+//回溯代码模板
+void backtracking(参数) {
+    if (终止条件) {
+        存放结果;
+        return;
+    }
+
+    for (选择：本层集合中元素（树中节点孩子的数量就是集合的大小）) {
+        处理节点;
+        backtracking(路径，选择列表); // 递归
+        回溯，撤销处理结果
+    }
+}
+```
+##### 子集问题
+![leetcode](https://programmercarl.com/0090.%E5%AD%90%E9%9B%86II.html#_90-%E5%AD%90%E9%9B%86ii)
+```
+class Solution {
+private:
+    vector<vector<int>> result;
+    vector<int> path;
+    void backtracking(vector<int>& nums, int startIndex, vector<bool>& used) {
+        result.push_back(path);
+        for (int i = startIndex; i < nums.size(); i++) {
+            // used[i - 1] == true，说明同一树枝candidates[i - 1]使用过
+            // used[i - 1] == false，说明同一树层candidates[i - 1]使用过
+            // 而我们要对同一树层使用过的元素进行跳过
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false) {
+                continue;
+            }
+            path.push_back(nums[i]);
+            used[i] = true;
+            backtracking(nums, i + 1, used);
+            used[i] = false;
+            path.pop_back();
+        }
+    }
+
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        result.clear();
+        path.clear();
+        vector<bool> used(nums.size(), false);
+        sort(nums.begin(), nums.end()); // 去重需要排序
+        backtracking(nums, 0, used);
+        return result;
+    }
+};
+```
+
+
+
+### 动态规划的dp
+#### 一维数组(0-1背包问题,)
+1. dp[j]表示：容量为j的背包，所背的物品价值可以最大为dp[j]
+2. 递归公式：dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+3. 求装满背包有几种方法，递推公式一般都是dp[i] += dp[i - nums[j]];
+```
+一维数组倒序遍历 
+
+for(int i = 0; i < weight.size(); i++) { // 遍历物品
+    for(int j = bagWeight; j >= weight[i]; j--) { // 遍历背包容量
+        dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+
+    }
+}
+
+完全背包问题
+// 先遍历物品，再遍历背包
+for(int i = 0; i < weight.size(); i++) { // 遍历物品
+    for(int j = weight[i]; j <= bagWeight ; j++) { // 遍历背包容量
+        dp[j] = max(dp[j], dp[j - weight[i]] + value[i]);
+
+    }
+}
+```
+4. 如果求组合数就是外层for循环遍历物品，内层for遍历背包。如果求排列数就是外层for遍历背包，内层for循环遍历物品。
+![leetcode](https://leetcode-cn.com/problems/combination-sum-iv/)
+```
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        vector<int>dp(target+1, 0);
+        dp[0] = 1;//先遍历背包
+        for(int i = 0; i <= target; i++){
+            for(int j = 0; j < nums.size(); j++){//在遍历物品
+                if(i - nums[j] >= 0 &&  dp[i - nums[j]] < INT_MAX - dp[i])
+                    dp[i] += dp[i - nums[j]];
+            }
+        }
+        return dp[target];
+    }
+};
+```
+
+#### 二维数组
+1. dp[i][j] 表示从下标为[0-i]的物品里任意取，放进容量为j的背包，价值总和最大是多少。
+2. 递归公式： dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]);
+```
+//二维数组注意赋初始值
+for (int j = 0 ; j < weight[0]; j++) {  // 当然这一步，如果把dp数组预先初始化为0了，这一步就可以省略，但很多同学应该没有想清楚这一点。
+    dp[0][j] = 0;
+}
+// 正序遍历
+for (int j = weight[0]; j <= bagweight; j++) {
+    dp[0][j] = value[0];
+}
+
+
+for(int i = 1; i < weight.size(); i++) { // 遍历物品
+        for(int j = 0; j <= bagweight; j++) { // 遍历背包容量
+            if (j < weight[i]) dp[i][j] = dp[i - 1][j];
+            else dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - weight[i]] + value[i]);
+
+        }
+    }
+```
 
 
 
 
+#### 1的比特数
+1.  最直观的做法是对从 0 到 n 的每个整数直接计算「一比特数」。每个 int 型的数都可以用 32 位二进制数表示，只要遍历其二进制表示的每一位即可得到 1 的数目。
+
+利用Brian Kernighan 算法，可以在一定程度上进一步提升计算速度。Brian Kernighan 算法的原理是：对于任意整数 x，令 x=x & (x−1)，该运算将 x 的二进制表示的最后一个 1 变成0。因此，对 x 重复该操作，直到 x 变成 0，则操作次数即为x 的「一比特数」。
 
 
+#### 滑动窗口
 
+```
+while (end < ***.size()){
+            将***[end]加入窗口;
+            while (start <= end && 比目标值大){
+                将***[start]踢出窗口;
+                ++start;
+                在此处逻辑操作;
+            }
+            或在此处进行逻辑操作;
+            ++end;
+        }
 
-
-
-
-
-
+```
