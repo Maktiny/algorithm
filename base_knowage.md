@@ -171,9 +171,9 @@ public:
 ![2022-03-02 10-36-08 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzvc68kdakj30sh0lun99.jpg)
 
 ### C++ 的priority_queue优先级队列
-* priority_queue利用max-heap（大顶堆）完成对元素的排序，这个大顶堆是以vector为表现形式的complete binary tree（完全二叉树）
-* 默认是大顶堆：priority_queue<int> big_heap
-* 小顶堆：priority_queue<int, vector<int>, greater<int>> small_heap
+* priority_queue利用max-heap（默认大顶堆）完成对元素的排序，这个大顶堆是以vector为表现形式的complete binary tree（完全二叉树）
+* 大顶堆(降序排列)：priority_queue<int, vector<int>, less<int>> 降序
+* 小顶堆(升序排列)：priority_queue<int, vector<int>, greater<int>> 升序
 
 ![2022-03-02 09-21-37 的屏幕截图.png](http://tva1.sinaimg.cn/large/0070vHShly1gzv9zhyiw4j30pr0dmagj.jpg)
 
@@ -593,4 +593,43 @@ while (end < ***.size()){
             ++end;
         }
 
+```
+
+
+#### 拓扑排序
+1. 拓扑排序算法是每次都从有向无环图中取出入度为 0 的节点添加到拓扑排序的序列中，
+2. 然后删除以该节点为起点的边(与该节点相连的节点的入度减1)。重复以上过程，直至图为空或者不存在入度为 0 的节点，
+3. 若最终图为空，那么图就是一个有向无环图，若最终图不为空且已不存在入度为 0 的节点，那么该图一定有环。
+4. [!leetcode](https://leetcode-cn.com/problems/QA2IGt/)
+```
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        //拓扑排序(有向无环图)
+        unordered_map<int,vector<int>>grap;//邻接表存储图
+        vector<int>indegress(numCourses, 0);//在建图的时候初始化边
+        for(auto &pre : prerequisites){
+            grap[pre[1]].push_back(pre[0]);
+            indegress[pre[0]]++;
+        }
+
+        vector<int>result;
+        queue<int>que;
+        for(int i = 0; i < indegress.size(); i++){
+            if(indegress[i] == 0){
+                que.push(i);
+            }
+        }
+
+        while(!que.empty()){
+            int it = que.front();
+            que.pop();
+            result.push_back(it);
+
+            for(auto &node : grap[it]){
+                indegress[node]--;
+                if(indegress[node] == 0) que.push(node);
+            }
+        }
+        if(result.size() != numCourses) return {};
+        else return result;
+    }
 ```

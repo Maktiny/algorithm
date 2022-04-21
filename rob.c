@@ -18,5 +18,6 @@ int main() {
   int a[4] = {1,2,3,1};
   int re = rob(a,4);
   printf("result is %d\n",re);
+  printf("1 << 5 is %d", 1 << 5);
   return 0;
 }
