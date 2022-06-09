@@ -222,6 +222,7 @@ public:
 ```
 /*注意memset()只能为数组赋初始值为0
  *原因是memset()函数的实现导致的，
+void *memset(void *s,int c,unsigned long n);//n的单位是字节B
 void *(memset) (void *s,int c,size_t n)
 {
      const unsigned char uc = c;
