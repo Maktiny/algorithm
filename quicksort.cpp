@@ -15,6 +15,7 @@ int qs(int nums[], int start, int end) {
     }
     nums[start] = port;
     return  start;
+
 }
 
 void quick(int nums[], int start , int end){
