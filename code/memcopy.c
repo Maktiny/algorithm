@@ -2,7 +2,7 @@
 
 
 void *memcopy(void* des, void* src, int n) {
-    if(des == NULL || src == NULL || n < 0) return des;
+    if(des == NULL || src == NULL || n < 0) return NULL;
 
     char* pdes = (char *) des;
     char* psrc = (char *) src;

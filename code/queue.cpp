@@ -2,19 +2,19 @@
 
 using namespace std;
 
-vector<int>queue;
+vector<int>que;
 
 
 void push(int value) {
-    queue.push_back(value);
+    que.push_back(value);
 }
 
 
 int pop() {
-    if(!queue.empty()) {
-        int ret = queue.front();
-        auto it = queue.begin();
-        queue.erase(it);
+    if(!que.empty()) {
+        int ret = que.front();
+        auto it = que.begin();
+        que.erase(it);
         return ret;
     }
     else{
@@ -23,5 +23,12 @@ int pop() {
 }
 
 int  main() {
-
+    push(3);
+    push(4);
+    push(84);
+    pop();
+    for(auto it = que.begin(), end = que.end(); it != end; ++it) {
+        cout<<*it<<endl;
+    }
+    return 0;
 }
