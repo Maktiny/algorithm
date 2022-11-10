@@ -20,7 +20,7 @@ int qs(int nums[], int start, int end) {
 
 void quick(int nums[], int start , int end){
     if(start >= end)
-         return; 
+         return; //递归出口
 
     int mid = qs(nums, start, end);
     quick(nums, start, mid - 1);
